@@ -43,7 +43,7 @@ namespace Task_four.Controllers
                     var user = await _userManager.FindByIdAsync(userId);
                     if (action == "Lock")
                     {
-                        user.LockoutEnd = DateTime.MaxValue;
+                        user.LockoutEnd = new DateTime(2099,12,31);
                         user.UserStatus = Enums.UserStatus.Blocked;
                         
                         if (user == userCheck)
@@ -61,6 +61,10 @@ namespace Task_four.Controllers
                     }
                     else if (action == "Delete")
                     {
+                        if (user == userCheck)
+                        {
+                            await _signInManager.SignOutAsync();
+                        }
                         await _userManager.DeleteAsync(user);
                     }
                 }

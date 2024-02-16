@@ -1,0 +1,106 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="container mt-5">
+        <button type="button" class="btn btn-danger"  onclick="performAction('Lock')">
+            <img src="/lock-fill.svg" alt="Lock Icon" class="mr-2">Lock
+        </button>
+        <button type="button" class="btn btn-success" onclick="performAction('Unlock')">
+            <img src="/unlock.svg" alt="Unlock Icon" class="mr-2">Unlock
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="performAction('Delete')">
+            <img src="/trash.svg" alt="Unlock Icon" class="mr-2">Delete
+        </button>
+    </div>
+    <form id="manageUsersForm" method="post" action="ManageUsers">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" class="form-check-input" onchange="toggleAllCheckboxes(this)"/>
+                    </th>
+                    <th>
+                        User ID
+                    </th>
+                    <th>
+                        Full Name
+                    </th>
+                    <th>
+                        E-mail
+                    </th>
+                    <th>
+                        Registration Date
+                    </th>
+                    <th>
+                        Last login
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in UserManager.Users)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="selectedUsers" value="@user.Id" />
+                        </td>
+                        <td>
+                            @user.Id!
+                        </td>
+                        <td>
+                            @user.FullName
+                        </td>
+                        <td>
+                            @user.Email
+                        </td>
+                        <td>
+                            @user.RegistrationDate
+                        </td>
+                        <td>
+                            @user.LastLogin
+                        </td>
+                        <td>
+                            @user.UserStatus.ToString()
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </form>
+
+    <script>
+        function performAction(action) {
+            var form = document.getElementById('manageUsersForm');
+            var selectedUsers = [];
+
+            // Исправленная ошибка в селекторе
+            var checkboxes = form.querySelectorAll('input[name="selectedUsers"]:checked');
+
+            checkboxes.forEach(function (checkbox) {
+                selectedUsers.push(checkbox.value);
+            });
+
+            var actionField = document.createElement('input');
+            actionField.type = 'hidden';
+            actionField.name = 'action';
+            actionField.value = action;
+            form.appendChild(actionField);
+
+            form.submit();
+
+            actionField.remove();
+        }
+
+        function toggleAllCheckboxes(checkbox) {
+            var checkboxes = document.querySelectorAll('input[name="selectedUsers"]');
+            checkboxes.forEach(function (cb) {
+                cb.checked = checkbox.checked;
+            });
+        }
+    </script>
+}

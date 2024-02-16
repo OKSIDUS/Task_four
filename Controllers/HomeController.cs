@@ -44,7 +44,11 @@ namespace Task_four.Controllers
                     {
                         user.LockoutEnd = DateTime.MaxValue;
                         user.UserStatus = Enums.UserStatus.Blocked;
-                        await _signInManager.SignOutAsync();
+                        if (user == await _userManager.GetUserAsync(User))
+                        {
+                            await _signInManager.SignOutAsync();
+                        }
+                        
                         await _userManager.UpdateAsync(user);
                     }
                     else if (action == "Unlock")

@@ -77,8 +77,7 @@
         function performAction(action) {
             var form = document.getElementById('manageUsersForm');
             var selectedUsers = [];
-
-            // Исправленная ошибка в селекторе
+            
             var checkboxes = form.querySelectorAll('input[name="selectedUsers"]:checked');
 
             checkboxes.forEach(function (checkbox) {

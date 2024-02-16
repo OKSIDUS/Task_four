@@ -37,6 +37,7 @@ namespace Task_four.Controllers
         {
             if (selectedUsers.Count > 0)
             {
+                var userCheck = await _userManager.GetUserAsync(User);
                 foreach (var userId in selectedUsers)
                 {
                     var user = await _userManager.FindByIdAsync(userId);
@@ -44,7 +45,8 @@ namespace Task_four.Controllers
                     {
                         user.LockoutEnd = DateTime.MaxValue;
                         user.UserStatus = Enums.UserStatus.Blocked;
-                        if (user == await _userManager.GetUserAsync(User))
+                        
+                        if (user == userCheck)
                         {
                             await _signInManager.SignOutAsync();
                         }
